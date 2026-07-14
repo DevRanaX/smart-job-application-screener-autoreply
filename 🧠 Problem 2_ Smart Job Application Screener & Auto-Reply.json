@@ -1,0 +1,403 @@
+{
+  "name": "🧠 Problem 2: Smart Job Application Screener & Auto-Reply",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Smart Job Application",
+        "formDescription": "Smart Job Application Screener & Auto-Reply",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "placeholder": "Enter Your Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Enter Your Email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Experience",
+              "placeholder": "Enter Your Experience",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Skills",
+              "fieldType": "textarea",
+              "placeholder": "Enter Your All Skills Set",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "CoverLatter",
+              "fieldType": "textarea",
+              "placeholder": "Write Your CoverLatter",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        0
+      ],
+      "id": "78539592-8fab-44f6-96b3-17e9a3b5c3d6",
+      "name": "On form submission",
+      "webhookId": "6bd8749c-4cf4-439e-b7c0-410bb882e562"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app0RPKmUC5TrPTuk",
+          "mode": "list",
+          "cachedResultName": "Smart Job Application Screener & Auto-Reply",
+          "cachedResultUrl": "https://airtable.com/app0RPKmUC5TrPTuk"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCQQPT6znDfsP84",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/app0RPKmUC5TrPTuk/tblCQQPT6znDfsP84"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "AI-Score": "={{ $json.text }}",
+            "Name": "={{ $('On form submission').item.json.Name }}",
+            "CoverLatter": "={{ $('On form submission').item.json.CoverLatter }}",
+            "Skills": "={{ $('On form submission').item.json.Skills }}",
+            "Email": "={{ $('On form submission').item.json.Email }}",
+            "Experience": "={{ $('On form submission').item.json.Experience }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "CoverLatter",
+              "displayName": "CoverLatter",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI-Score",
+              "displayName": "AI-Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        0
+      ],
+      "id": "bc7e7b30-25cf-42aa-b125-62bd275b411e",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "YGwXabivN60s0NtH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\n\nCandidate details:\nExperience: {{ $json.Experience }} years\nSkills: {{ $json.Skills }}\nCover Letter: {{ $json.CoverLatter }}\n\nBased on the above, give a fit score out of 100 as a number only. No explanation.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "9f7f5f67-0653-4864-918b-5a2dfff147b2",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        224
+      ],
+      "id": "e2d7690e-f19a-4d4a-80a3-ab2ae2053b65",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "QRYv8Dv4JEtt9uiq",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d62d2814-61ea-4450-b692-5c0584e11b71",
+              "leftValue": "={{ $json.fields['AI-Score'] }}",
+              "rightValue": 70,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        0
+      ],
+      "id": "c530896e-2c22-40f3-bcf6-14ee7dc3df76",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "developerboy002@gmail.com",
+        "subject": "=🚀 High-Fit Candidate Alert: {{ $('On form submission').item.json.Name }}\n\n(Score: {{ $('Basic LLM Chain').item.json.text }}%)",
+        "emailType": "text",
+        "message": "=Dear HR Team,\n\nA candidate has applied who matches our job requirements with a strong fit score. Please find the details below:\n\n━━━━━━━━━━━━━━━━━\nName: {{ $('Create a record').item.json.fields.Name }}\nEmail: {{ $('Create a record').item.json.fields.Email }}\nExperience: {{ $('Create a record').item.json.fields.Experience }} years\nAI Fit Score: {{ $('Create a record').item.json.fields['AI-Score'] }} / 100\n━━━━━━━━━━━━━━━━━\n\nSkills:\n{{ $('Create a record').item.json.fields.Skills }}\n\nCover Letter:\n{{ $('Create a record').item.json.fields.CoverLatter }}\n\nThis profile scored above our threshold and deserves an immediate review. \nPlease schedule the next steps at the earliest.\n\nBest regards,\nAutomated Screening System",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        608,
+        -112
+      ],
+      "id": "6edf3a6c-40a5-4789-b6e1-f5ffb5f7ebbd",
+      "name": "Send a message",
+      "webhookId": "cccb93a9-2382-4c89-b496-89dfed9ac3d4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "p4vY30pTEj9wbNKo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Create a record').item.json.fields.Email }}",
+        "subject": "=✅ Congratulations {{ $('Create a record').item.json.fields.Name }}– Your Application Has Been Shortlisted!",
+        "emailType": "text",
+        "message": "=Dear {{ $('On form submission').item.json.Name }},\n\nThank you for applying for the position.\n\nWe are pleased to inform you that your profile has been shortlisted based on your experience and skills. Our hiring team will review your application in detail and reach out to you soon regarding the next steps.\n\nWe appreciate your interest in joining our team and wish you the best!\n\nWarm regards,\nHR Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        -53.375
+      ],
+      "id": "25eff71d-bd81-4684-9e12-c048a8e0a794",
+      "name": "Send a message1",
+      "webhookId": "f7611985-4973-4b7c-85e8-2f604db35046",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "p4vY30pTEj9wbNKo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "=Thank you for your application, {{ $('On form submission').item.json.Name }}",
+        "emailType": "text",
+        "message": "=Dear {{ $('On form submission').item.json.Name }} ,\n\nThank you for taking the time to apply for the position and sharing your qualifications with us. \n\nAfter careful review, we regret to inform you that we will not be moving forward with your application at this time. However, we were impressed by your background and would like to keep your profile in our database for future opportunities that may be a stronger match for your skills and experience.  \n\nWe appreciate your interest in joining our team and wish you the very best in your job search.  Warm regards, HR Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        96
+      ],
+      "id": "3a7029d8-49d5-4ad1-af38-91bedf3eeda5",
+      "name": "Send a message2",
+      "webhookId": "e9907fc9-0d32-4913-963d-3552fab0f0ed",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "p4vY30pTEj9wbNKo",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "35b9cdbb-87a5-401c-9b72-e041bf44e3d9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "509cee73ebab6eab0f4a47ddbf153c3fba205f0822975d28c3fada9e71340708"
+  },
+  "nodeGroups": [],
+  "id": "avbdcnkXQmD44XNJ",
+  "tags": []
+}
